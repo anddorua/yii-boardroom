@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use \yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "employees".
@@ -15,8 +16,9 @@ use Yii;
  * @property integer $hour_mode
  * @property integer $first_day
  * @property string $name
+ * @property string $auth_key
  */
-class Employee extends \yii\db\ActiveRecord
+class Employee extends \yii\db\ActiveRecord implements IdentityInterface
 {
     /**
      * @inheritdoc
@@ -43,6 +45,7 @@ class Employee extends \yii\db\ActiveRecord
             [['email'], 'string', 'max' => 129],
             [['pwd_hash'], 'string', 'max' => 40],
             [['name'], 'string', 'max' => 128],
+            [['auth_key'], 'string', 'max' => 255],
             [['login'], 'unique'],
         ];
     }
@@ -63,4 +66,71 @@ class Employee extends \yii\db\ActiveRecord
             'name' => 'Name',
         ];
     }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public static function findIdentity($id)
+    {
+        return self::findOne($id);
+    }
+
+    /**
+     * @param $username string login name
+     * @return null|Employee
+     */
+    public static function findByUsername($username)
+    {
+        return self::findOne(['login' => $username]);
+    }
+
+    /**
+     * Validates password
+     * @param $password string|null
+     * @return bool
+     */
+    public function validatePassword($password)
+    {
+        return self::hashPassword($password) == $this->pwd_hash;
+    }
+
+    public static function hashPassword($password)
+    {
+        if (is_null($password) || $password == '') {
+            return null;
+        } else {
+            return sha1('kjndvlkjadnvadv' . $password);
+        }
+    }
+
+    public function beforeSave($insert)
+    {
+        if (parent::beforeSave($insert)) {
+            if ($this->isNewRecord) {
+                $this->auth_key = Yii::$app->security->generateRandomString();
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        return $this->auth_key === $authKey;
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return null;
+    }
+
+
 }

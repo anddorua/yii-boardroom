@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "appointments".
@@ -21,7 +22,7 @@ use Yii;
  * @property Employee $creator
  * @property Room $room
  */
-class Appointment extends \yii\db\ActiveRecord
+class Appointment extends ActiveRecord
 {
     /**
      * @inheritdoc

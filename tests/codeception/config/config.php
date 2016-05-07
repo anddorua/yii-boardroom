@@ -14,7 +14,9 @@ return [
     ],
     'components' => [
         'db' => [
-            'dsn' => 'mysql:host=localhost;dbname=yii2_basic_tests',
+            'dsn' => 'mysql:host=localhost;dbname=boardroom_tests',
+            'username' => 'boardroom_tests',
+            'password' => 'boardroom_tests',
         ],
         'mailer' => [
             'useFileTransport' => true,

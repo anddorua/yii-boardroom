@@ -1,7 +1,8 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\ActiveForm;
+use app\models\Employee;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Employee */
@@ -10,21 +11,25 @@ use yii\widgets\ActiveForm;
 
 <div class="employee-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['layout' => 'horizontal']); ?>
+
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'login')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'pwd_hash')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'is_admin')->checkbox() ?>
 
-    <?= $form->field($model, 'is_admin')->textInput() ?>
+    <?= $form->field($model, 'hour_mode')->radioList([
+            12 => 'AM/PM',
+            24 => '24 hrs',
+    ]) ?>
 
-    <?= $form->field($model, 'hour_mode')->textInput() ?>
-
-    <?= $form->field($model, 'first_day')->textInput() ?>
-
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'first_day')->radioList([
+        Employee::FIRST_DAY_SUNDAY => 'Sunday',
+        Employee::FIRST_DAY_MONDAY => 'Monday',
+    ]) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
