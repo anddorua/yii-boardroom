@@ -6,6 +6,7 @@ use app\models\Employee;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Employee */
+/* @var $passChange app\models\PasswordChange */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -30,6 +31,10 @@ use app\models\Employee;
         Employee::FIRST_DAY_SUNDAY => 'Sunday',
         Employee::FIRST_DAY_MONDAY => 'Monday',
     ]) ?>
+
+    <?= $form->field($passChange, 'oldPassword')->textInput() ?>
+    <?= $form->field($passChange, 'newPassword1')->textInput() ?>
+    <?= $form->field($passChange, 'newPassword2')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

@@ -8,6 +8,7 @@ use app\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\PasswordChange;
 
 /**
  * EmployeeController implements the CRUD actions for Employee model.
@@ -83,12 +84,34 @@ class EmployeeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+        $passChange = new PasswordChange();
+        $passChange->scenario = is_null($model->pwd_hash) ? PasswordChange::NO_PASSWORD : PasswordChange::HAS_PASSWORD;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post()) && $passChange->load(Yii::$app->request->post())
+            && $model->validate() && $passChange->validate()
+        ) {
+            if ($passChange->scenario == PasswordChange::HAS_PASSWORD){
+                if (!$model->validatePassword($passChange->oldPassword)) {
+                    $passChange->addError('oldPassword', 'Password incorrect');
+                }
+            }
+            if ($passChange->hasNewPassword() && $passChange->newPassword1 != $passChange->newPassword2) {
+                $passChange->addError('newPassword2', 'New password retype incorrect');
+            }
+            if (!$model->hasErrors()) {
+                $model->setPassword($passChange->newPassword1);
+                if ($model->save(false)) {
+                    return $this->redirect(['view', 'id' => $model->id]);
+                }
+            }
+            return $this->render('update', [
+                'model' => $model,
+                'passChange' => $passChange,
+            ]);
         } else {
             return $this->render('update', [
                 'model' => $model,
+                'passChange' => $passChange,
             ]);
         }
     }

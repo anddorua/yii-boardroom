@@ -93,12 +93,17 @@ class Employee extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return self::hashPassword($password) == $this->pwd_hash;
+        return self::hashPassword($password) === $this->pwd_hash;
+    }
+
+    public function setPassword($password)
+    {
+        $this->pwd_hash = self::hashPassword($password);
     }
 
     public static function hashPassword($password)
     {
-        if (is_null($password) || $password == '') {
+        if (empty($password)) {
             return null;
         } else {
             return sha1('kjndvlkjadnvadv' . $password);
@@ -132,5 +137,8 @@ class Employee extends \yii\db\ActiveRecord implements IdentityInterface
         return null;
     }
 
-
+    public function isEmptyPassword()
+    {
+        return empty($this->pwd_hash);
+    }
 }

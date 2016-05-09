@@ -48,6 +48,10 @@ $config = [
         */
     ],
     'params' => $params,
+    'as emptyPassRedirector' => [
+        'class' => '\app\components\EmptyPasswordRedirector',
+        'emptyPasswordRoute' => 'employee/update',
+    ],
 ];
 
 if (YII_ENV_DEV) {
