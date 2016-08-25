@@ -8,8 +8,10 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use app\assets\BoardroomAsset;
 
 AppAsset::register($this);
+BoardroomAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -41,10 +43,14 @@ AppAsset::register($this);
     $rooms = \app\models\Room::find()->orderBy(['room_name' => SORT_ASC])->all();
     $roomItems = [];
     foreach($rooms as $room) {
-        $roomItems[] = [
+        $item = [
             'label' => $room->room_name,
-            'url' => ['/site/index', ['room' => $room->id]],
+            'url' => ['/site/room', 'room' => $room->id],
         ];
+        if ($room->id == Yii::$app->currentRoom->id) {
+            $item['options'] = ['class' => ['active']];
+        }
+        $roomItems[] = $item;
     }
     $navItems[] = [
         'label' => 'Boardroom',

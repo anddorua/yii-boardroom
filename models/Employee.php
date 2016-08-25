@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use \yii\web\IdentityInterface;
+use \yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "employees".
@@ -18,19 +19,40 @@ use \yii\web\IdentityInterface;
  * @property string $name
  * @property string $auth_key
  */
-class Employee extends \yii\db\ActiveRecord implements IdentityInterface
+class Employee extends ActiveRecord implements IdentityInterface
 {
     /**
      * @inheritdoc
      */
-    const MODE_DAY_24 = 24;
-    const MODE_DAY_12 = 12;
+    const MODE_HOUR_24 = 24;
+    const MODE_HOUR_12 = 12;
     const FIRST_DAY_SUNDAY = 0;
     const FIRST_DAY_MONDAY = 1;
+    const FIRST_DAY_NAMES = [
+        self::FIRST_DAY_SUNDAY => 'Sunday',
+        self::FIRST_DAY_MONDAY => 'Monday',
+    ];
+    const HOUR_MODE_NAMES = [
+        self::MODE_HOUR_12 => '12 am/pm',
+        self::MODE_HOUR_24 => '24 /day',
+    ];
+
+
+    const SCENARIO_NEW_FROM_SCHEMA = 'new from schema';
 
     public static function tableName()
     {
         return 'employees';
+    }
+
+    public function init()
+    {
+        parent::init();
+        if ($this->scenario == self::SCENARIO_NEW_FROM_SCHEMA) {
+            $schema = $this->getDb()->getTableSchema($this->tableName());
+            $this->hour_mode = $schema->columns['hour_mode']->defaultValue;
+            $this->first_day = $schema->columns['first_day']->defaultValue;
+        }
     }
 
     /**
@@ -39,7 +61,8 @@ class Employee extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['login', 'email', 'name'], 'required'],
+            [['login', 'email', 'name', 'hour_mode', 'first_day'], 'required'],
+            [['login', 'email', 'name', 'hour_mode', 'first_day'], 'required', 'on' => self::SCENARIO_NEW_FROM_SCHEMA],
             [['is_admin', 'hour_mode', 'first_day'], 'integer'],
             [['login'], 'string', 'max' => 64],
             [['email'], 'string', 'max' => 129],
@@ -141,4 +164,5 @@ class Employee extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return empty($this->pwd_hash);
     }
+
 }

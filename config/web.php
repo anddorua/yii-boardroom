@@ -17,6 +17,7 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\Employee',
             'enableAutoLogin' => true,
+            'loginUrl' => ['site/login'],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -38,6 +39,12 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
+        'currentRoom' => [
+            'class' => 'app\components\CurrentRoom',
+        ],
+        'currentPeriod' => [
+            'class' => 'app\components\CurrentPeriod',
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -49,8 +56,9 @@ $config = [
     ],
     'params' => $params,
     'as emptyPassRedirector' => [
-        'class' => '\app\components\EmptyPasswordRedirector',
-        'emptyPasswordRoute' => 'employee/update',
+        'class' => '\app\components\EmptyPasswordActionRedirector',
+        'emptyPasswordRoute' => '/employee/update',
+        'allowed' => ['site/logout'],
     ],
 ];
 

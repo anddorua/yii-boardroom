@@ -32,9 +32,11 @@ use app\models\Employee;
         Employee::FIRST_DAY_MONDAY => 'Monday',
     ]) ?>
 
-    <?= $form->field($passChange, 'oldPassword')->textInput() ?>
-    <?= $form->field($passChange, 'newPassword1')->textInput() ?>
-    <?= $form->field($passChange, 'newPassword2')->textInput() ?>
+    <?php if (isset($passChange)) {
+        echo $form->field($passChange, 'oldPassword')->textInput();
+        echo $form->field($passChange, 'newPassword1')->textInput();
+        echo $form->field($passChange, 'newPassword2')->textInput();
+    } ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? 'Create' : 'Update', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

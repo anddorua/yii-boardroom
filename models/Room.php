@@ -40,4 +40,12 @@ class Room extends \yii\db\ActiveRecord
             'room_name' => 'Room Name',
         ];
     }
+
+    /**
+     * @return Room
+     */
+    public static function getDefaultRoom()
+    {
+        return self::find()->orderBy(['room_name' => SORT_ASC])->limit(1)->one();
+    }
 }

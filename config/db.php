@@ -4,6 +4,6 @@ return [
     'class' => 'yii\db\Connection',
     'dsn' => 'mysql:host=localhost;dbname=boardroom',
     'username' => 'root',
-    'password' => '',
+    'password' => 'epson123',
     'charset' => 'utf8',
 ];

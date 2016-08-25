@@ -64,10 +64,10 @@ class EmployeeController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Employee();
+        $model = new Employee(['scenario' => Employee::SCENARIO_NEW_FROM_SCHEMA]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index', 'id' => $model->id]);
         } else {
             return $this->render('create', [
                 'model' => $model,
@@ -84,35 +84,34 @@ class EmployeeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        $passChange = new PasswordChange();
-        $passChange->scenario = is_null($model->pwd_hash) ? PasswordChange::NO_PASSWORD : PasswordChange::HAS_PASSWORD;
+        $editOwnProfile = $id == Yii::$app->user->id;
 
-        if ($model->load(Yii::$app->request->post()) && $passChange->load(Yii::$app->request->post())
-            && $model->validate() && $passChange->validate()
-        ) {
-            if ($passChange->scenario == PasswordChange::HAS_PASSWORD){
-                if (!$model->validatePassword($passChange->oldPassword)) {
-                    $passChange->addError('oldPassword', 'Password incorrect');
-                }
-            }
-            if ($passChange->hasNewPassword() && $passChange->newPassword1 != $passChange->newPassword2) {
-                $passChange->addError('newPassword2', 'New password retype incorrect');
-            }
-            if (!$model->hasErrors()) {
-                $model->setPassword($passChange->newPassword1);
-                if ($model->save(false)) {
-                    return $this->redirect(['view', 'id' => $model->id]);
-                }
-            }
-            return $this->render('update', [
-                'model' => $model,
-                'passChange' => $passChange,
-            ]);
+        $passChange = new PasswordChange();
+        $modelsToShow = ['model' => $model];
+        if ($editOwnProfile) {
+            $passChange->scenario = is_null($model->pwd_hash) ? PasswordChange::SCENARIO_NO_PASSWORD : PasswordChange::SCENARIO_HAS_PASSWORD;
+            $modelsToShow['passChange'] = $passChange;
         } else {
-            return $this->render('update', [
-                'model' => $model,
-                'passChange' => $passChange,
-            ]);
+            $passChange->scenario = PasswordChange::SCENARIO_ALIEN_PROFILE;
+        }
+        Yii::trace("!! scenario is " . $passChange->scenario);
+
+        $modelTest = $model->load(Yii::$app->request->post()) && $model->validate();
+        $passChangeTest = !$editOwnProfile || (
+            $passChange->load(Yii::$app->request->post())
+            && $passChange->setEmployee($model)
+            && $passChange->validate());
+
+        if ($modelTest && $passChangeTest) {
+            if (!empty($passChange->newPassword1)) {
+                $model->setPassword($passChange->newPassword1);
+            }
+            if ($model->save(false)) {
+                return $this->redirect(['index', 'id' => $model->id]);
+            }
+            return $this->render('update', $modelsToShow);
+        } else {
+            return $this->render('update', $modelsToShow);
         }
     }
 

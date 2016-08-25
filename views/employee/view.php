@@ -30,12 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'login',
+            'name',
             'email:email',
             'pwd_hash',
-            'is_admin',
-            'hour_mode',
-            'first_day',
-            'name',
+            'is_admin:boolean',
+            ['label' => 'Hour Mode', 'value' => \app\models\Employee::HOUR_MODE_NAMES[$model->hour_mode]],
+            ['label' => 'First Day', 'value' => \app\models\Employee::FIRST_DAY_NAMES[$model->first_day]],
         ],
     ]) ?>
 

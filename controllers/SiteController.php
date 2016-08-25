@@ -2,12 +2,16 @@
 
 namespace app\controllers;
 
+use app\models\Appointment;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\DisplayPeriod;
+use app\models\Room;
+use app\models\Employee;
 
 class SiteController extends Controller
 {
@@ -49,21 +53,55 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        /* @var $employee \app\models\Employee
+         * @var Yii::$app->currentRoom \app\components\CurrentRoom
+         */
+        $employee = Yii::$app->user->identity;
+        $firstDay = is_object($employee) ? $employee->first_day : Yii::$app->params['defaultFirstDay'];
+        $hourMode = is_object($employee) ? $employee->hour_mode : Yii::$app->params['defaultHourMode'];
+
+        $successfulBooking = Yii::$app->session->getFlash('successfulBooking');
+        //Yii::trace("!!successfulBooking is " . print_r($successfulBooking, true));
+        return $this->render('index', [
+            'tpl_browse_first_day' => $firstDay,
+            'tpl_browse_calendar' => Appointment::getMonthAppointments(Yii::$app->currentRoom->id, Yii::$app->currentPeriod->getCurrent()),
+            'tpl_browse_hour_mode' => $hourMode,
+            'room' => Room::findOne(Yii::$app->currentRoom->id),
+            'successfulBooking' => $successfulBooking,
+        ]);
+    }
+
+    public function actionPeriod($month)
+    {
+        switch ($month) {
+            case 'prev':
+                Yii::$app->currentPeriod->prev();
+                break;
+            case 'next':
+                Yii::$app->currentPeriod->next();
+                break;
+        }
+        return $this->redirect(['site/index']);
+    }
+
+    public function actionRoom($room)
+    {
+        Yii::$app->currentRoom->id = $room;
+        return $this->redirect(['site/index']);
     }
 
     public function actionLogin()
     {
-        Yii::trace("Action login invoked");
+        //Yii::trace("Action login invoked");
         if (!Yii::$app->user->isGuest) {
-            Yii::trace("!!Seems we are not guest, going home.");
+            //Yii::trace("!!Seems we are not guest, going home.");
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        Yii::trace("!!Login form model created");
+        //Yii::trace("!!Login form model created");
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            Yii::trace("!!Login procedure passed, going back");
+            //Yii::trace("!!Login procedure passed, going back");
             return $this->goBack();
         }
         return $this->render('login', [

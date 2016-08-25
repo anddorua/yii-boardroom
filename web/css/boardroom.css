@@ -1,0 +1,110 @@
+.cal-day {
+    display: inline-block;
+    font-size: 60%;
+    clear: both;
+}
+
+.cal-entry {
+    font-size: 75%;
+    display: inline-block;
+    width:100%;
+    text-align: center;
+}
+
+.cal-row {
+    height: 60px;
+}
+
+div.browse-calendar {
+    clear: both;
+}
+
+.month-pager nav {
+    float: left;
+}
+
+.month-pager ul {
+    margin-top: 0;
+}
+
+.month-pager .book-control {
+    /* float: right; */
+    margin-top: 0;
+}
+
+.browse-calendar table {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+.browse-calendar td {
+    border: 1px black solid;
+    width: 115px;
+    vertical-align: top;
+}
+.browse-calendar th {
+    border: 1px black solid;
+    text-align: center;
+}
+
+.new-calendar {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.nc-row {
+    display: table-row;
+}
+
+.nc-head, .nc-cell {
+    display: table-cell;
+    padding: 3px 10px;
+    border: 1px solid #999999;
+    width: 14.23%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nc-head {
+    background-color: #ddd;
+    text-align: center;
+    font-weight: bold;
+}
+
+.nc-cell {
+    height: 60px;
+    padding: 10px 10px 7px;
+}
+
+.day-badge {
+    position: absolute;
+    background-color: #00aa00;
+    width: 20px;
+    color: white;
+    text-align: center;
+    margin-left: -10px;
+    margin-top: -10px;
+    font-size: smaller;
+    border-radius: 0 0 6px 0;
+}
+
+.nc-app-item {
+    text-align: center;
+    background-color: #d6f3ff;
+    color: black;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.nc-cell a:hover {
+    text-decoration: none;
+}
+.nc-cell a:link {
+    text-decoration: none;
+}
