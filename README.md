@@ -83,9 +83,9 @@ php yii migrate
 ~~~
 
 ### Прописываем VirtualHost сервера
-[см. здесь](http://i-leon.ru/ustanovka-i-nastrojka-apache-php-mysql-na-centos-pma-i-ftp/)
+[см. здесь](http://i-leon.ru/ustanovka-i-nastrojka-apache-php-mysql-na-centos-pma-i-ftp/). При этом каталогом сайта должен быть каталог _web_.
 
 ### Заходим на сервер
-Логин _admin_, пароль пустой.
+Логин __admin__, пароль пустой.
 
 
