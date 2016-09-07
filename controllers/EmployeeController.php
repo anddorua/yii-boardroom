@@ -8,6 +8,7 @@ use app\models\EmployeeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use app\models\PasswordChange;
 
 /**
@@ -25,6 +26,17 @@ class EmployeeController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'roles' => ['@'],
+                    ],
                 ],
             ],
         ];
@@ -94,8 +106,11 @@ class EmployeeController extends Controller
         } else {
             $passChange->scenario = PasswordChange::SCENARIO_ALIEN_PROFILE;
         }
-        Yii::trace("!! scenario is " . $passChange->scenario);
 
+        if (Yii::$app->request->isGet && Yii::$app->request->getUrl() != Yii::$app->request->referrer) {
+            //saving referrer to return back
+            Yii::$app->user->setReturnUrl(Yii::$app->request->referrer);
+        }
         $modelTest = $model->load(Yii::$app->request->post()) && $model->validate();
         $passChangeTest = !$editOwnProfile || (
             $passChange->load(Yii::$app->request->post())
@@ -107,7 +122,9 @@ class EmployeeController extends Controller
                 $model->setPassword($passChange->newPassword1);
             }
             if ($model->save(false)) {
-                return $this->redirect(['index', 'id' => $model->id]);
+                //return $this->redirect(['index', 'id' => $model->id]);
+                Yii::trace('referrer is:' . Yii::$app->request->referrer);
+                return $this->goBack();
             }
             return $this->render('update', $modelsToShow);
         } else {

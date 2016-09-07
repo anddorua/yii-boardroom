@@ -165,4 +165,8 @@ class Employee extends ActiveRecord implements IdentityInterface
         return empty($this->pwd_hash);
     }
 
+    public function isAdmin()
+    {
+        return $this->is_admin == 1;
+    }
 }

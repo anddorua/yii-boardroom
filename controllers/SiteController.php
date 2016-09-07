@@ -92,16 +92,12 @@ class SiteController extends Controller
 
     public function actionLogin()
     {
-        //Yii::trace("Action login invoked");
         if (!Yii::$app->user->isGuest) {
-            //Yii::trace("!!Seems we are not guest, going home.");
-            return $this->goHome();
+            return $this->goHome();//Yii::trace("!!Seems we are not guest, going home.");
         }
 
         $model = new LoginForm();
-        //Yii::trace("!!Login form model created");
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            //Yii::trace("!!Login procedure passed, going back");
             return $this->goBack();
         }
         return $this->render('login', [

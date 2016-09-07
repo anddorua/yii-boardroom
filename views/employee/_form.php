@@ -20,7 +20,7 @@ use app\models\Employee;
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'is_admin')->checkbox() ?>
+    <?= Yii::$app->user->identity->isAdmin() ? $form->field($model, 'is_admin')->checkbox() : '' ?>
 
     <?= $form->field($model, 'hour_mode')->radioList([
             12 => 'AM/PM',

@@ -1,102 +1,86 @@
-Yii 2 Basic Project Template
-============================
+Boardroom
+=========
+GeeksForLess тестовый php проект, переделанный на Yii 2. Учебный проект, выполненный с целью освоения Yii 2.
+Система предназначена для бронирования переговорных комнат.
+Функции:
+- осуществляет менеджмент учетных записей пользователей;
+- прием и модификацию бронирования переговорной комнаты.
+Исходное задание содержало условие не использовать сторонних библиотек. Данный проект, помимо использования php фреймворка, содержит сторонние интерфейсные элементы (поле ввода даты и времени), а так же использует ajax и модальные элементы из Bootstrap, как более соответсвующие современным техникам создания пользовательского интерфейса.
+Проект содержит определенные недоработки: не введены ограничения на доступ к учетным данным пользователей со стороны не обладающих административными правами пользователей, отсутствует функция удаления букинга. Цель проекта - освоение фреймворка, поэтому недостатки будут исправлены лишь при потребности (хотя, ограничение доступа следует все же доделать с целью освоения RBAC авторизации).
+[Исходный прототип можно увидеть здесь](https://github.com/anddorua/boardroom)
 
-Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-rapidly creating small projects.
+СИСТЕМНЫЕ ТРЕБОВАНИЯ
+--------------------
 
-The template contains the basic features including user login/logout and a contact page.
-It includes all commonly used configurations that would allow you to focus on adding new
-features to your application.
-
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-app-basic/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-app-basic/downloads.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-basic.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-basic)
-
-DIRECTORY STRUCTURE
--------------------
-
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
+PHP 5.5.9., MySQL | MariaDB
 
 
+ИНСТАЛЛЯЦИЯ
+-----------
 
-REQUIREMENTS
-------------
+Далее идет инструкция для [CentOS 7](https://virtualboxes.org/images/centos/), для которой тестировалась инсталляция от имени root пользователя. Хороший туториал по начальной установке веб-компонентов и их настройке можно найти [здесь](http://i-leon.ru/ustanovka-i-nastrojka-apache-php-mysql-na-centos-pma-i-ftp/).
 
-The minimum requirement by this project template that your Web server supports PHP 5.4.0.
-
-
-INSTALLATION
-------------
-
-### Install from an Archive File
-
-Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
-a directory named `basic` that is directly under the Web root.
-
-Set cookie validation key in `config/web.php` file to some random secret string:
-
-```php
-'request' => [
-    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-    'cookieValidationKey' => '<secret random string goes here>',
-],
-```
-
-You can then access the application through the following URL:
-
+1. Создаем каталог для сайта (исходный каталог /home)
 ~~~
-http://localhost/basic/web/
+[root@localhost home]# mkdir yiib
+[root@localhost home]# cd yiib
+~~~
+2. Копируем проект в текущий каталог
+~~~
+git clone https://github.com/anddorua/yii-boardroom .
 ~~~
 
+3. На сервере MySQL создайте пустую базу данных и пользователя с правами на создание таблиц и работу с ними.
+    Пример создания базы и пользователя:
+    зайти в MySQL: ```mysql -u root -p<root_password>```
+~~~
+create database yiib;
+create user 'yiib'@'localhost' identified by 'yiib';
+grant all privileges on yiib.* to 'yiib'@'localhost';
+flush privileges;
+~~~
 
-### Install via Composer
+4. Конфигурируем подключение к базе данных.
+
+   Редактируем `config/db.php` с реальными данными для подключения:
+
+   ```php
+   return [
+       'class' => 'yii\db\Connection',
+       'dsn' => 'mysql:host=localhost;dbname=yiib',
+       'username' => 'yiib',
+       'password' => 'yiib',
+       'charset' => 'utf8',
+   ];
+   ```
+
+5. Обновляем PHP
+Некоторые компоненты требуют PHP >= 5.5.9, так-что если у вас более ранняя версия, потребуется ее обновить до 5.6. Проверить можно ```yum list installed | grep "php"```. Инструкцию по обновлению см. [здесь](http://devdocs.magento.com/guides/v2.0/install-gde/prereq/php-centos.html), только предварительно надо удалить старую версию php ```yum -y remove php php-common php-gd php-xml php-mbstring```
+
+
+6. Устанавливаем Composer
 
 If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
 at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
 
-You can then install this project template using the following command:
-
+### Инсталлируем плагин
 ~~~
 php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 ~~~
 
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
-directly under the Web root.
-
+### Устанавливаем зависимости проекта
 ~~~
-http://localhost/basic/web/
+php composer.phar install
 ~~~
 
+7. Применяем миграцию к базе данных
+~~~
+php yii migrate
+~~~
 
-CONFIGURATION
--------------
+8. Прописываем VirtualHost сервера
+[см. здесь](http://i-leon.ru/ustanovka-i-nastrojka-apache-php-mysql-na-centos-pma-i-ftp/)
 
-### Database
+9. Заходим на сервер
 
-Edit the file `config/db.php` with real data, for example:
 
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
-```
-
-**NOTES:**
-- Yii won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
-- Refer to the README in the `tests` directory for information specific to basic application tests.
