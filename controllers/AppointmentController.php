@@ -29,7 +29,6 @@ class AppointmentController extends Controller
                 'actions' => [
                     'book' => ['POST', 'GET'],
                     'modify' => ['POST'],
-
                 ],
             ],
             'access' => [
