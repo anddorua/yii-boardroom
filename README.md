@@ -88,6 +88,6 @@ php yii migrate
 [см. здесь](http://i-leon.ru/ustanovka-i-nastrojka-apache-php-mysql-na-centos-pma-i-ftp/). При этом каталогом сайта должен быть каталог _web_.
 
 ### Заходим на сервер
-Логин __admin__, пароль пустой. Возможна ошибка web/assets недоступен для записи. ```chmod -R 777 web/assets``` поможет для целей тестирования.
+Логин __admin__, пароль пустой. Возможна ошибка web/assets или runtime недоступен для записи. ```chmod -R 777 web/assets``` и ```chmod -R 777 runtime``` поможет для целей тестирования.
 
 
