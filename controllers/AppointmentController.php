@@ -12,6 +12,7 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
+use yii\web\ServerErrorHttpException;
 
 /**
  * AppointmentController implements the CRUD actions for Appointment model.
@@ -29,6 +30,7 @@ class AppointmentController extends Controller
                 'actions' => [
                     'book' => ['POST', 'GET'],
                     'modify' => ['POST'],
+                    'delete' => ['DELETE'],
                 ],
             ],
             'access' => [
@@ -147,4 +149,8 @@ class AppointmentController extends Controller
         return $booking;
     }
 
+    public function actionDelete($appId, $affect = 'one')
+    {
+        throw new ServerErrorHttpException('deletion not implemented: appId=' . $appId . ', affect=' . $affect);
+    }
 }

@@ -27,6 +27,7 @@ $timeFormat = $tpl_browse_hour_mode == app\models\Employee::MODE_HOUR_12 ? 'LT' 
     var bookViewUrlTemplate = "<?= Url::to(['appointment/book-info', 'appId' => 'placeholder'])?>";
     var allowedOptionsUrlTemplate = "<?= Url::to(['app-rest/allowed-options', 'appId' => 'placeholder'])?>";
     var submitUrlTemplate = "<?= Url::to(['appointment/modify'])?>";
+    var deleteUrlTemplate = "<?= Url::to(['appointment/delete', 'appId' => 'placeholder', 'affect' => 'set-placeholder'])?>";
 </script>
 
 <!-- Modal -->
@@ -99,6 +100,7 @@ $timeFormat = $tpl_browse_hour_mode == app\models\Employee::MODE_HOUR_12 ? 'LT' 
 
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left" id="delete-button">Delete</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 <button type="button" class="btn btn-primary" id="save-button">Save changes</button>
             </div>
@@ -106,7 +108,7 @@ $timeFormat = $tpl_browse_hour_mode == app\models\Employee::MODE_HOUR_12 ? 'LT' 
     </div>
 </div>
 <?php
-$this->registerJs('jQuery(function () { var appFormCtrl = new AppChangeController("appChangeModal", "app-info-form", "save-button", "nc-app-item", bookViewUrlTemplate, allowedOptionsUrlTemplate, submitUrlTemplate);  });', \yii\web\View::POS_READY);
+$this->registerJs('jQuery(function () { var appFormCtrl = new AppChangeController("appChangeModal", "app-info-form", "save-button", "delete-button", "nc-app-item", bookViewUrlTemplate, allowedOptionsUrlTemplate, submitUrlTemplate, deleteUrlTemplate);  });', \yii\web\View::POS_READY);
 ?>
 <?php
     $alertContent = '';
