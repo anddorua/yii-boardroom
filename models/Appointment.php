@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\db\ActiveRecord;
 use app\utility\DateHelper;
+use yii\db\Query;
 
 /**
  * This is the model class for table "appointments".

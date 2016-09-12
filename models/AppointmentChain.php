@@ -7,9 +7,13 @@
  */
 
 namespace app\models;
+
+use Yii;
+use yii\db\Query;
 use app\models\BookingForm;
 use app\models\Appointment;
 use Codeception\Util\Debug;
+
 
 /**
  * Class AppointmentChain
@@ -273,5 +277,25 @@ class AppointmentChain implements \Iterator
             $appointment->save();
         }
     }
+
+    /**
+     * deletes all appointments in chain $appId belongs to
+     * but preserve members earlier $preserve time
+     * @param $appId
+     * @param \DateTime $preserve
+     * @return integer
+     */
+    public static function deleteAppChain($appId, \DateTime $preserve)
+    {
+        $command = Yii::$app->db->createCommand()->delete('appointments', [
+            'and',
+            ['in', 'chain', (new Query())->select('chain')->from('(select chain from appointments where id=:id) as p')],
+            ['>=', 'time_end', $preserve->format('Y-m-d H:i:s')],
+        ])->bindParam(':id', $appId);
+        Yii::trace('del sql:' . $command->rawSql);
+
+        return $command->execute();
+    }
+
 
 }

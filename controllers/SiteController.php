@@ -61,6 +61,7 @@ class SiteController extends Controller
         $hourMode = is_object($employee) ? $employee->hour_mode : Yii::$app->params['defaultHourMode'];
 
         $successfulBooking = Yii::$app->session->getFlash('successfulBooking');
+        $successfulDelete = Yii::$app->session->getFlash('successfulDelete');
         //Yii::trace("!!successfulBooking is " . print_r($successfulBooking, true));
         return $this->render('index', [
             'tpl_browse_first_day' => $firstDay,
@@ -68,6 +69,7 @@ class SiteController extends Controller
             'tpl_browse_hour_mode' => $hourMode,
             'room' => Room::findOne(Yii::$app->currentRoom->id),
             'successfulBooking' => $successfulBooking,
+            'successfulDelete' => $successfulDelete,
         ]);
     }
 

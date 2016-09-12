@@ -133,7 +133,9 @@ function AppChangeController(modalId, formId, saveBtnId, delBtnId, appItemClass,
             .replace('set-placeholder', form.find('#bookingform-applytoall').prop('checked') ? 'all' : 'one');
         $.ajax(url, { type: 'DELETE'})
             .then(function(data){
-                alert("success: " + error);
+                appFormSubmitted = true;
+                $('#' + modalId).modal('hide');
+                //console.log(data);
             }, function(error){
                 setSummaryErrorMessage(error.responseText);
             });

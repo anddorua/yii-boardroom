@@ -14,6 +14,7 @@ use app\models\Employee;
  * @var Yii::$app->currentPeriod \app\components\CurrentPeriod shows current period
  * @var $room \app\models\Room
  * @var $successfulBooking array
+ * @var $successfulDelete array
  * */
 
 $this->title = 'Boardroom Application';
@@ -111,20 +112,41 @@ $timeFormat = $tpl_browse_hour_mode == app\models\Employee::MODE_HOUR_12 ? 'LT' 
 $this->registerJs('jQuery(function () { var appFormCtrl = new AppChangeController("appChangeModal", "app-info-form", "save-button", "delete-button", "nc-app-item", bookViewUrlTemplate, allowedOptionsUrlTemplate, submitUrlTemplate, deleteUrlTemplate);  });', \yii\web\View::POS_READY);
 ?>
 <?php
+function makeAlert($content)
+{
     $alertContent = '';
     $alertClass = ['alert', 'alert-success'];
-    if (!is_null($successfulBooking)) {
-        $booking = new \app\models\BookingForm($successfulBooking);
-        $timeToShow =
-            \app\utility\DateHelper::FormatTimeAccordingRule($booking->getTimeBeginAsDateTime(), $tpl_browse_hour_mode)
-            . ' - '
-            . \app\utility\DateHelper::FormatTimeAccordingRule($booking->getTimeEndAsDateTime(), $tpl_browse_hour_mode);
-        $bookNote = Html::encode($booking->comment);
-        $alertContent = "The event <strong>$timeToShow</strong> has been added. The text for this event is: <strong>$bookNote</strong>";
+    if (!empty($content)) {
+        $alertContent = $content;
     } else {
         $alertClass[] = 'hidden';
     }
-    echo Html::tag('div', $alertContent, ['class' => $alertClass]);
+    return Html::tag('div', $alertContent, ['class' => $alertClass]);
+}
+?>
+<!-- appointment modify alerts -->
+<?php
+$alertContent = '';
+if (!is_null($successfulBooking)) {
+    $booking = new \app\models\BookingForm($successfulBooking);
+    $timeToShow =
+        \app\utility\DateHelper::FormatTimeAccordingRule($booking->getTimeBeginAsDateTime(), $tpl_browse_hour_mode)
+        . ' - '
+        . \app\utility\DateHelper::FormatTimeAccordingRule($booking->getTimeEndAsDateTime(), $tpl_browse_hour_mode);
+    $bookNote = Html::encode($booking->comment);
+    $alertContent = "The event <strong>$timeToShow</strong> has been added. The text for this event is: <strong>$bookNote</strong>";
+}
+
+echo makeAlert($alertContent);
+?>
+
+<!-- appointment delete alerts -->
+<?php
+echo makeAlert(
+    !is_null($successfulDelete)
+        ? $this->render('_delMsg', ['delCount' => $successfulDelete['delCount']])
+        : ''
+);
 ?>
 <div class="month-pager  clearfix">
     <nav>

@@ -151,6 +151,12 @@ class AppointmentController extends Controller
 
     public function actionDelete($appId, $affect = 'one')
     {
-        throw new ServerErrorHttpException('deletion not implemented: appId=' . $appId . ', affect=' . $affect);
+        if ($affect == 'one') {
+            $delCount = Appointment::deleteAll(['id' => $appId]);
+        } else {
+            $delCount = AppointmentChain::deleteAppChain($appId, new \DateTime());
+        }
+        Yii::$app->session->setFlash('successfulDelete', ['delCount' => $delCount]);
+        return;
     }
 }
